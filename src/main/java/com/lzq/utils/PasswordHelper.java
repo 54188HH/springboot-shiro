@@ -18,6 +18,10 @@ public class PasswordHelper {
     private String algorithmName = "md5";
     private final int hashIterations = 2;
 
+    /**
+     * 注册时调用这个方法生成盐
+     * @param user
+     */
     public  void encryptPassword(User user) {
         // User对象包含最基本的字段Username和Password
         user.setSalt(randomNumberGenerator.nextBytes().toHex());
@@ -27,7 +31,7 @@ public class PasswordHelper {
         user.setPassword(newPassword);
     }
     @Test
-    public  void main() {
+    public void method() {
         User u = new User();
         u.setId(2);
         u.setPassword("123456");

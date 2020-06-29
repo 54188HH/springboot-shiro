@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResult {
-    private Boolean Login;
+    private Boolean Login = false;
     private String result;
 }
