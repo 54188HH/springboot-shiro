@@ -1,10 +1,10 @@
 package com.lzq.utils;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,8 +53,9 @@ public class ShiroConfig {
 
     /**
      * 凭证匹配器
-     * （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
-     * ）
+     *
+     * 由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
+     *
      * @return
      */
     @Bean
@@ -85,6 +86,20 @@ public class ShiroConfig {
     }
 
     /**
+     *  开启Shiro的注解(如@RequiresRoles,@RequiresPermissions)
+     *  需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证
+     *  配置以下两个bean(DefaultAdvisorAutoProxyCreator
+     *  和AuthorizationAttributeSourceAdvisor)即可实现此功能
+     * @return
+     */
+    @Bean
+    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator(){
+        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        advisorAutoProxyCreator.setProxyTargetClass(true);
+        return advisorAutoProxyCreator;
+    }
+
+    /**
      *  开启shiro aop注解支持.
      *  使用代理方式;所以需要开启代码支持;
      * @param securityManager
@@ -95,17 +110,6 @@ public class ShiroConfig {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
-    }
-    /**
-     *  开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证
-     * 配置以下两个bean(DefaultAdvisorAutoProxyCreator和AuthorizationAttributeSourceAdvisor)即可实现此功能
-     * @return
-     */
-    @Bean
-    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator(){
-        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        advisorAutoProxyCreator.setProxyTargetClass(true);
-        return advisorAutoProxyCreator;
     }
 
     @Bean(name="simpleMappingExceptionResolver")
@@ -126,4 +130,9 @@ public class ShiroConfig {
         //r.setWarnLogCategory("example.MvcLogger");
         return r;
     }
+
+
+
+
+
 }

@@ -2,11 +2,8 @@ package com.lzq.controller;
 
 import com.lzq.dao.UserMapper;
 import com.lzq.service.LoginService;
-import com.lzq.service.LoginServiceImpl;
 import com.lzq.utils.LoginResult;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.crypto.hash.Md5Hash;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

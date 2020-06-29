@@ -33,7 +33,6 @@ public class LoginServiceImpl implements LoginService {
 //        if (currentUser.isAuthenticated() == false) {
 //
 //        }
-
         // 3、将用户名和密码封装到UsernamePasswordToken
         UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
 
