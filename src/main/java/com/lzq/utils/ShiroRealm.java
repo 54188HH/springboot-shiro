@@ -2,6 +2,7 @@ package com.lzq.utils;
 
 import com.lzq.dao.UserMapper;
 import com.lzq.entity.User;
+import io.lettuce.core.GeoArgs;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,10 +12,17 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @program: springbootshiro
@@ -25,6 +33,9 @@ import java.util.List;
 public class ShiroRealm extends AuthorizingRealm {
     @Resource
     private UserMapper mapper;
+    @Resource
+    private RedisTemplate redisTemplate;
+    Lock lock = new ReentrantLock();
     //权限信息，包括角色以及权限
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -34,7 +45,7 @@ public class ShiroRealm extends AuthorizingRealm {
         //也就是SimpleAuthenticationInfo构造的时候第一个参数传递需要User对象
         User user  = (User)principals.getPrimaryPrincipal();
         System.out.println("授权页面、:"+user.toString());
-        List<String> list = mapper.findByAuth(user.getUserName());
+        List<String> list =  mapper.findByAuth(user.getUserName());
         System.out.println(list);
         /*for(SysRole role:user.getRoleList()){
             authorizationInfo.addRole(role.getRole());
